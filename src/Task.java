@@ -64,11 +64,11 @@ public class Task {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "{" +
+        return "\n" + this.getClass().getSimpleName() + "{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status=" + status +
-                '}';
+                "}";
     }
 }

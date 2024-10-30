@@ -20,7 +20,10 @@ public class Main {
         Integer subtask2Id = taskManager.createSubtask(subtask2);
         Integer subtask3Id = taskManager.createSubtask(subtask3);
 
-        taskManager.printAllTasks();
+        System.out.println(taskManager.getTaskList());
+        System.out.println(taskManager.getEpicList());
+        System.out.println(taskManager.getSubtaskList());
+
         System.out.println("\n---------------\n");
         task1.setStatus(Status.IN_PROGRESS);
         taskManager.updateTask(task1);
@@ -33,11 +36,15 @@ public class Main {
         subtask3.setStatus(Status.IN_PROGRESS);
         taskManager.updateSubtask(subtask3);
 
-        taskManager.printAllTasks();
+        System.out.println(taskManager.getTaskList());
+        System.out.println(taskManager.getEpicList());
+        System.out.println(taskManager.getSubtaskList());
         System.out.println("\n---------------\n");
 
         taskManager.deleteEpic(epic1Id);
         taskManager.deleteTask(task2Id);
-        taskManager.printAllTasks();
+        System.out.println(taskManager.getTaskList());
+        System.out.println(taskManager.getEpicList());
+        System.out.println(taskManager.getSubtaskList());
     }
 }

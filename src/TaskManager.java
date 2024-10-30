@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class TaskManager {
     public static Integer generatedId;
@@ -14,42 +15,28 @@ public class TaskManager {
         generatedId = 0;
     }
 
-    public HashMap<Integer, Task> getTaskHashMap() {
-        return taskHashMap;
+    public List<Task> getTaskList() {
+        List<Task> list = new ArrayList<>();
+        for (Task task : taskHashMap.values()) {
+            list.add(task);
+        }
+        return list;
     }
 
-    public HashMap<Integer, Epic> getEpicHashMap() {
-        return epicHashMap;
+    public List<Epic> getEpicList() {
+        List<Epic> list = new ArrayList<>();
+        for (Epic epic : epicHashMap.values()) {
+            list.add(epic);
+        }
+        return list;
     }
 
-    public HashMap<Integer, Subtask> getSubtaskHashMap() {
-        return subtaskHashMap;
-    }
-
-    public Integer createTask(String name, String description, Status status) {
-        Task task = new Task(name, description, status);
-        task.setId(generatedId);
-        taskHashMap.put(task.getId(), task);
-        generatedId++;
-        return task.getId();
-    }
-
-    public Integer createSubtask(String name, String description, Status status, Integer epicID) {
-        Subtask subtask = new Subtask(name, description, status, epicID);
-        subtask.setId(generatedId);
-        subtaskHashMap.put(subtask.getId(), subtask);
-        updateEpicStatus(subtask.getEpicId());
-        generatedId++;
-        return subtask.getId();
-    }
-
-    public Integer createEpic(String name, String description) {
-        Epic epic = new Epic(name, description);
-        epic.setId(generatedId);
-        epicHashMap.put(epic.getId(), epic);
-        updateEpicStatus(epic.getId());
-        generatedId++;
-        return epic.getId();
+    public List<Subtask> getSubtaskList() {
+        List<Subtask> list = new ArrayList<>();
+        for (Subtask subtask : subtaskHashMap.values()) {
+            list.add(subtask);
+        }
+        return list;
     }
 
     public void deleteAllTasks() {
@@ -68,12 +55,23 @@ public class TaskManager {
         }
     }
 
-    public Task getAnItemById(Integer id) {
+
+    public Task getTask(Integer id) {
         if (taskHashMap.containsKey(id)) {
             return taskHashMap.get(id);
-        } else if (epicHashMap.containsKey(id)) {
+        }
+        return null;
+    }
+
+    public Epic getEpic(Integer id) {
+        if (epicHashMap.containsKey(id)) {
             return epicHashMap.get(id);
-        } else if (subtaskHashMap.containsKey(id)) {
+        }
+        return null;
+    }
+
+    public Subtask getSubtask(Integer id) {
+        if (subtaskHashMap.containsKey(id)) {
             return subtaskHashMap.get(id);
         }
         return null;
@@ -152,16 +150,6 @@ public class TaskManager {
             }
         }
         return list;
-    }
-
-    public void printAllTasks() {
-        for (int i = 0; i < generatedId; i++) {
-            if (getAnItemById(i) == null) {
-                continue;
-            } else {
-                System.out.println(getAnItemById(i));
-            }
-        }
     }
 
     private void updateEpicStatus(Integer id) {
