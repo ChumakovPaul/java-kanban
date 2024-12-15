@@ -43,6 +43,6 @@ public interface TaskManager {
 
     void updateEpicStatus(Integer id);
 
-    List<Task> getHistory();
+    ArrayList<Task> getHistory();
 }
 

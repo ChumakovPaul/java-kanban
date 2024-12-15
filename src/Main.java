@@ -1,5 +1,3 @@
-import java.util.Random;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -14,47 +12,37 @@ public class Main {
         Integer epic2Id = inMemoryTaskManager.createEpic(epic2);
         Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW, epic1Id);
         Subtask subtask2 = new Subtask("Купить подарочную упаковку", "Найти магазин и купить понравившуюся", Status.IN_PROGRESS, epic1Id);
-        Subtask subtask3 = new Subtask("Позвонить риелтору", "Позвонить риелтору в начале недели", Status.NEW, epic1Id);
+        Subtask subtask3 = new Subtask("Позвонить риелтору", "Позвонить риелтору в начале недели", Status.NEW, epic2Id);
         Integer subtask1Id = inMemoryTaskManager.createSubtask(subtask1);
         Integer subtask2Id = inMemoryTaskManager.createSubtask(subtask2);
         Integer subtask3Id = inMemoryTaskManager.createSubtask(subtask3);
         printAllTasks(inMemoryTaskManager);
-
     }
 
     private static void printAllTasks(TaskManager manager) {
-        Random random = new Random();
+        System.out.println("Задачи:");
+        for (Task task : manager.getTasks()) {
+            manager.getTask(task.getId());
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Task epic : manager.getEpics()) {
+            manager.getEpic(epic.getId());
+            System.out.println(epic);
 
-        System.out.println(manager.getTask(random.nextInt(2)));
-        System.out.println(manager.getSubtask(random.nextInt(4, 7)));
-        System.out.println(manager.getSubtask(random.nextInt(4, 7)));
-        System.out.println(manager.getTask(random.nextInt(2)));
-        System.out.println(manager.getTask(random.nextInt(2)));
-        System.out.println(manager.getTask(random.nextInt(2)));
-        System.out.println(manager.getEpic(random.nextInt(2, 4)));
-        System.out.println(manager.getEpic(2));
-        System.out.println(manager.getSubtask(4));
-        System.out.println(manager.getSubtask(5));
-        System.out.println(manager.getSubtask(6));
-        System.out.println(manager.getEpic(random.nextInt(2, 4)));
-        System.out.println(manager.getSubtask(random.nextInt(4, 7)));
-        System.out.println(manager.getSubtask(random.nextInt(4, 7)));
-        System.out.println(manager.getSubtask(random.nextInt(4, 7)));
-        System.out.println(manager.getTask(random.nextInt(2)));
-        System.out.println("-------------");
-
-        System.out.println("\nИстория:");
+            for (Task subtask : manager.getEpicSubtasks(epic)) {
+                manager.getSubtask(subtask.getId());
+                System.out.println("--> " + subtask);
+            }
+        }
+        System.out.println("Подзадачи:");
+        for (Task subtask : manager.getSubtasks()) {
+            manager.getSubtask(subtask.getId());
+            System.out.println(subtask);
+        }
+        System.out.println("История:");
         for (Task task : manager.getHistory()) {
             System.out.println(task);
         }
-        System.out.println("-------------");
-
-        manager.deleteEpic(2);
-
-        System.out.println("\nИстория:");
-        for (Task task : manager.getHistory()) {
-            System.out.println(task);
-        }
-        System.out.println("-------------");
     }
 }
