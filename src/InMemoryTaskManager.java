@@ -20,7 +20,6 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getTasks() {
         List<Task> list = new ArrayList<>();
         for (Task task : taskHashMap.values()) {
-
             list.add(task);
         }
         return list;
@@ -30,7 +29,6 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Epic> getEpics() {
         List<Epic> list = new ArrayList<>();
         for (Epic epic : epicHashMap.values()) {
-
             list.add(epic);
         }
         return list;
@@ -146,12 +144,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(Integer id) {
+        if (historyManager.history.map.containsKey(id)) {
+            historyManager.remove(id);
+        }
         taskHashMap.remove(id);
     }
 
     @Override
     public void deleteSubtask(Integer id) {
         Integer epicId = subtaskHashMap.get(id).getEpicId();
+        if (historyManager.history.map.containsKey(id)) {
+            historyManager.remove(id);
+        }
         subtaskHashMap.remove(id);
         updateEpicStatus(epicId);
     }
@@ -159,7 +163,13 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteEpic(Integer id) {
         for (Subtask subtask : getEpicSubtasks(epicHashMap.get(id))) {
+            if ((historyManager.history.map.containsKey(subtask.getId()))) {
+                historyManager.remove(subtask.getId());
+            }
             deleteSubtask(subtask.getId());
+        }
+        if (historyManager.history.map.containsKey(id)) {
+            historyManager.remove(id);
         }
         epicHashMap.remove(id);
     }
@@ -169,7 +179,6 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Subtask> list = new ArrayList<>();
         for (Subtask subtask : subtaskHashMap.values()) {
             if (subtask.getEpicId().equals(epic.getId())) {
-
                 list.add(subtask);
             }
         }
@@ -200,7 +209,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
-    public ArrayList<Task> getHistory() {
+    public List<Task> getHistory() {
         return historyManager.getHistory();
     }
 }
