@@ -18,16 +18,14 @@ class InMemoryHistoryManagerTest {
         Task task2 = new Task("Учеба", "Послушать лекцию и решить задачу", Status.IN_PROGRESS);
         task1.setId(0);
         task2.setId(1);
-        Node<Task> node1 = new Node<>(task1);
-        Node<Task> node2 = new Node<>(task2);
         historyManager.add(task1);
         historyManager.add(task2);
-        assertEquals(node1.data, historyManager.getHistory().get(0));
-        assertEquals(node2.data, historyManager.getHistory().get(1));
-        assertNotNull(historyManager.history.getTasks());
+        assertEquals(task1, historyManager.getHistory().get(0));
+        assertEquals(task2, historyManager.getHistory().get(1));
+        assertNotNull(historyManager.getTasks());
         assertEquals(2, historyManager.getHistory().size());
-        assertEquals(task1, historyManager.history.head.data);
-        assertEquals(task2, historyManager.history.tail.data);
+        assertEquals(task1, historyManager.head.data);
+        assertEquals(task2, historyManager.tail.data);
     }
 
     @Test
@@ -39,8 +37,8 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.remove(0);
-        assertEquals(task2, historyManager.history.head.data);
-        assertEquals(task2, historyManager.history.tail.data);
+        assertEquals(task2, historyManager.head.data);
+        assertEquals(task2, historyManager.tail.data);
     }
 
     @Test
