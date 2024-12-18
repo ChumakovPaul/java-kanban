@@ -144,7 +144,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(Integer id) {
-        if (historyManager.history.map.containsKey(id)) {
+        if (historyManager.history.containsKey(id)) {
             historyManager.remove(id);
         }
         taskHashMap.remove(id);
@@ -153,7 +153,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubtask(Integer id) {
         Integer epicId = subtaskHashMap.get(id).getEpicId();
-        if (historyManager.history.map.containsKey(id)) {
+        if (historyManager.history.containsKey(id)) {
             historyManager.remove(id);
         }
         subtaskHashMap.remove(id);
@@ -163,12 +163,12 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteEpic(Integer id) {
         for (Subtask subtask : getEpicSubtasks(epicHashMap.get(id))) {
-            if ((historyManager.history.map.containsKey(subtask.getId()))) {
+            if ((historyManager.history.containsKey(subtask.getId()))) {
                 historyManager.remove(subtask.getId());
             }
             deleteSubtask(subtask.getId());
         }
-        if (historyManager.history.map.containsKey(id)) {
+        if (historyManager.history.containsKey(id)) {
             historyManager.remove(id);
         }
         epicHashMap.remove(id);
