@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
@@ -168,8 +170,8 @@ class InMemoryTaskManagerTest {
         Integer subtask1Id = taskManager.createSubtask(subtask1);
         taskManager.getEpic(epic1Id);
         taskManager.getSubtask(subtask1Id);
-        assertEquals(taskManager.historyManager.getHistory().get(0), taskManager.getEpic(epic1Id));
-        assertEquals(taskManager.historyManager.getHistory().get(1), taskManager.getSubtask(subtask1Id));
+        assertEquals(taskManager.historyManager.getHistory().get(0), epic1);
+        assertEquals(taskManager.historyManager.getHistory().get(1), subtask1);
     }
 
     @Test
@@ -261,4 +263,23 @@ class InMemoryTaskManagerTest {
         assertEquals(task.getId(), taskManager.getTask(task1Id).getId());
         assertEquals(task.getStatus(), taskManager.getTask(task1Id).getStatus());
     }
+
+    @Test
+    void shouldErrorToChangeSubtaskId() {
+        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
+        Integer epic1Id = taskManager.createEpic(epic1);
+        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW, epic1Id);
+        Integer subtask1Id = taskManager.createSubtask(subtask1);
+        Subtask subtask2 = new Subtask("Купить подарочную упаковку", "Найти магазин и купить понравившуюся", Status.IN_PROGRESS, epic1Id);
+        Integer subtask2Id = taskManager.createSubtask(subtask2);
+        taskManager.getEpic(epic1Id);
+        taskManager.getSubtask(subtask1Id);
+        taskManager.getSubtask(subtask2Id);
+        List<Task> list1 = taskManager.getHistory();
+        List<Task> list2 = taskManager.getHistory();
+        assertEquals(list2, list1);
+
+    }
+
+
 }

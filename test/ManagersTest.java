@@ -22,4 +22,6 @@ class ManagersTest {
         InMemoryHistoryManager historyManager = (InMemoryHistoryManager) manager.getDefaultHistory();
         assertNotNull(historyManager);
     }
+
+
 }
