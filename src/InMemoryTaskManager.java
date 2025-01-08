@@ -91,25 +91,31 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Integer createTask(Task task) {
-        task.setId(generatedId);
+        if (task.getId() == null) {
+            task.setId(generatedId);
+            generatedId++;
+        }
         taskHashMap.put(task.getId(), task);
-        generatedId++;
         return task.getId();
     }
 
     @Override
     public Integer createEpic(Epic epic) {
-        epic.setId(generatedId);
+        if (epic.getId() == null) {
+            epic.setId(generatedId);
+            generatedId++;
+        }
         epicHashMap.put(epic.getId(), epic);
-        generatedId++;
         return epic.getId();
     }
 
     @Override
     public Integer createSubtask(Subtask subtask) {
-        subtask.setId(generatedId);
+        if (subtask.getId() == null) {
+            subtask.setId(generatedId);
+            generatedId++;
+        }
         subtaskHashMap.put(subtask.getId(), subtask);
-        generatedId++;
         updateEpicStatus(subtask.getEpicId());
         return subtask.getId();
     }
@@ -143,7 +149,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteTask(Integer id) {
+    public void deleteTask(Integer id) throws ManagerSaveException {
         if (historyManager.history.containsKey(id)) {
             historyManager.remove(id);
         }
@@ -151,7 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteSubtask(Integer id) {
+    public void deleteSubtask(Integer id) throws ManagerSaveException {
         Integer epicId = subtaskHashMap.get(id).getEpicId();
         if (historyManager.history.containsKey(id)) {
             historyManager.remove(id);
@@ -161,7 +167,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteEpic(Integer id) {
+    public void deleteEpic(Integer id) throws ManagerSaveException {
         for (Subtask subtask : getEpicSubtasks(epicHashMap.get(id))) {
             if ((historyManager.history.containsKey(subtask.getId()))) {
                 historyManager.remove(subtask.getId());
@@ -186,7 +192,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateEpicStatus(Integer id) {
+    public void updateEpicStatus(Integer id) throws ManagerSaveException {
         int newCounter = 0;
         int inProgressCounter = 0;
         int doneCounter = 0;
@@ -206,7 +212,6 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (newCounter == 0 && inProgressCounter == 0 && doneCounter != 0) {
             epicHashMap.get(id).setStatus(Status.DONE);
         }
-
     }
 
     public List<Task> getHistory() {

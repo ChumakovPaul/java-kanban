@@ -72,7 +72,6 @@ public class InMemoryHistoryManager<T> implements HistoryManager {
         }
         list.add((Task) tail.data);
         return list;
-
     }
 
     public class Node<T> {
