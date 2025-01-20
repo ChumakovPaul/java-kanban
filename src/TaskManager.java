@@ -33,15 +33,15 @@ public interface TaskManager {
 
     void updateSubtask(Subtask subtask);
 
-    void deleteTask(Integer id);
+    void deleteTask(Integer id) throws ManagerSaveException;
 
-    void deleteSubtask(Integer id);
+    void deleteSubtask(Integer id) throws ManagerSaveException;
 
-    void deleteEpic(Integer id);
+    void deleteEpic(Integer id) throws ManagerSaveException;
 
     ArrayList<Subtask> getEpicSubtasks(Task task);
 
-    void updateEpicStatus(Integer id);
+    void updateEpicStatus(Integer id) throws ManagerSaveException;
 
     List<Task> getHistory();
 }

@@ -1,25 +1,43 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
 public class Main {
 
-    public static void main(String[] args) {
-        InMemoryTaskManager inMemoryTaskManager = (InMemoryTaskManager) Managers.getDefault();
-        Task task1 = new Task("Уборка", "Помыть полы и вынести мусор", Status.NEW);
-        Task task2 = new Task("Учеба", "Послушать лекцию и решить задачу", Status.IN_PROGRESS);
-        Integer task1Id = inMemoryTaskManager.createTask(task1);
-        Integer task2Id = inMemoryTaskManager.createTask(task2);
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Epic epic2 = new Epic("Договориться о встрече с риелтором", "Определить свободное время у себя и риелтора");
-        Integer epic1Id = inMemoryTaskManager.createEpic(epic1);
-        Integer epic2Id = inMemoryTaskManager.createEpic(epic2);
-        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW, epic1Id);
-        Subtask subtask2 = new Subtask("Купить подарочную упаковку", "Найти магазин и купить понравившуюся", Status.IN_PROGRESS, epic1Id);
-        Subtask subtask3 = new Subtask("Позвонить риелтору", "Позвонить риелтору в начале недели", Status.NEW, epic1Id);
-        Integer subtask1Id = inMemoryTaskManager.createSubtask(subtask1);
-        Integer subtask2Id = inMemoryTaskManager.createSubtask(subtask2);
-        Integer subtask3Id = inMemoryTaskManager.createSubtask(subtask3);
-        printAllTasks(inMemoryTaskManager);
+    public static void main(String[] args) throws IOException {
 
+        File file = File.createTempFile("file", ".csv");
+        FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(file);
+        Task task1 = new Task("Task1", "Description task1", Status.NEW);
+        Task task2 = new Task("Task2", "Description task2", Status.IN_PROGRESS);
+        Integer task1Id = manager.createTask(task1);
+        Integer task2Id = manager.createTask(task2);
+        Epic epic1 = new Epic("Epic1", "Description Epic1");
+        Epic epic2 = new Epic("Epic2", "Description Epic2");
+        Integer epic1Id = manager.createEpic(epic1);
+        Integer epic2Id = manager.createEpic(epic2);
+        Subtask subtask1 = new Subtask("Subtask1", "Description Subtask1", Status.NEW, epic1Id);
+        Subtask subtask2 = new Subtask("Subtask2", "Description Subtask2", Status.IN_PROGRESS, epic2Id);
+        Subtask subtask3 = new Subtask("Subtask3", "Description Subtask3", Status.NEW, epic2Id);
+        Integer subtask1Id = manager.createSubtask(subtask1);
+        Integer subtask2Id = manager.createSubtask(subtask2);
+        Integer subtask3Id = manager.createSubtask(subtask3);
+        printAllTasks(manager);
+
+        /* Я не очень понимаю, почему, но новый менеджер записываает таски из существующего
+        файла только при объявлении нового объекта File.*/
+        File file1 = new File(file.getName());
+        FileBackedTaskManager manager1 = FileBackedTaskManager.loadFromFile(file1);
+
+        for (Task task : manager1.getTasks()) {
+            System.out.println(task);
+        }
+        for (Epic epic : manager1.getEpics()) {
+            System.out.println(epic);
+        }
+        for (Subtask subtask : manager1.getSubtasks()) {
+            System.out.println(subtask);
+        }
     }
 
     private static void printAllTasks(TaskManager manager) {
@@ -51,10 +69,10 @@ public class Main {
 
         manager.deleteEpic(2);
 
-        System.out.println("\nИстория:");
+        System.out.println("\nИстория после удаления Эпика:");
         for (Task task : manager.getHistory()) {
             System.out.println(task);
         }
-        System.out.println("-------------");
+        System.out.println("-------------\n");
     }
 }

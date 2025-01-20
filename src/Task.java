@@ -5,16 +5,19 @@ public class Task {
     private String description;
     private Integer id;
     private Status status;
+    TaskType type;
 
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.type = TaskType.TASK;
     }
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
+        this.type = TaskType.TASK;
     }
 
     @Override
@@ -62,13 +65,12 @@ public class Task {
         this.status = status;
     }
 
+    public TaskType getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
-        return "\n" + this.getClass().getSimpleName() + "{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                "}";
+        return id + "," + type.name() + "," + name + "," + status.name() + "," + description;
     }
 }
