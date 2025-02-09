@@ -1,4 +1,6 @@
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private File file;
@@ -94,13 +96,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         if (task.length != 1) {
             switch (task[1]) {
                 case ("TASK"):
-                    result = new Task(task[2], task[4], Status.valueOf(task[3]));
+                    result = new Task(task[2], task[4], Status.valueOf(task[3]), LocalDateTime.parse(task[5]),
+                            Duration.ofMinutes(Long.parseLong(task[6])));
                     break;
                 case ("EPIC"):
                     result = new Epic(task[2], task[4]);
                     break;
                 case ("SUBTASK"):
-                    result = new Subtask(task[2], task[4], Status.valueOf(task[3]), Integer.valueOf(task[5]));
+                    result = new Subtask(task[2], task[4], Status.valueOf(task[3]), LocalDateTime.parse(task[6]),
+                            Duration.ofMinutes(Long.parseLong(task[7])), Integer.valueOf(task[5]));
                     break;
             }
             result.setId(Integer.valueOf(task[0]));
@@ -111,7 +115,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     private void save() {
         String fileName = file.getName();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write("id,type,name,status,description,epic,startTime,duration,endTime\n");
             for (Task value : taskHashMap.values()) {
                 writer.write(value.toString());
                 writer.newLine();
