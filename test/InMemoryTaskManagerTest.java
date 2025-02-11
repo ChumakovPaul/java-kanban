@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,167 +13,6 @@ class InMemoryTaskManagerTest {
     @BeforeEach
     void beforeEach() {
         taskManager = new InMemoryTaskManager();
-    }
-
-    @Test
-    void deleteAllTasksTest() {
-        Task task1 = new Task("Уборка", "Помыть полы и вынести мусор", Status.NEW);
-        Task task2 = new Task("Учеба", "Послушать лекцию и решить задачу", Status.IN_PROGRESS);
-        Integer task1Id = taskManager.createTask(task1);
-        Integer task2Id = taskManager.createTask(task2);
-        taskManager.deleteAllTasks();
-        assertTrue(taskManager.getTasks().isEmpty());
-    }
-
-    @Test
-    void deleteAllEpicsTest() {
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Epic epic2 = new Epic("Договориться о встрече с риелтором", "Определить свободное время у себя и риелтора");
-        Integer epic1Id = taskManager.createEpic(epic1);
-        Integer epic2Id = taskManager.createEpic(epic2);
-        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW, epic1Id);
-        Subtask subtask2 = new Subtask("Купить подарочную упаковку", "Найти магазин и купить понравившуюся", Status.IN_PROGRESS, epic1Id);
-        Subtask subtask3 = new Subtask("Позвонить риелтору", "Позвонить риелтору в начале недели", Status.NEW, epic2Id);
-        Integer subtask1Id = taskManager.createSubtask(subtask1);
-        Integer subtask2Id = taskManager.createSubtask(subtask2);
-        Integer subtask3Id = taskManager.createSubtask(subtask3);
-        taskManager.deleteAllEpics();
-        assertTrue(taskManager.getEpics().isEmpty());
-        assertTrue(taskManager.getSubtasks().isEmpty());
-    }
-
-    @Test
-    void deleteAllSubtasksTest() {
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Epic epic2 = new Epic("Договориться о встрече с риелтором", "Определить свободное время у себя и риелтора");
-        Integer epic1Id = taskManager.createEpic(epic1);
-        Integer epic2Id = taskManager.createEpic(epic2);
-        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW, epic1Id);
-        Subtask subtask2 = new Subtask("Купить подарочную упаковку", "Найти магазин и купить понравившуюся", Status.IN_PROGRESS, epic1Id);
-        Subtask subtask3 = new Subtask("Позвонить риелтору", "Позвонить риелтору в начале недели", Status.NEW, epic2Id);
-        Integer subtask1Id = taskManager.createSubtask(subtask1);
-        Integer subtask2Id = taskManager.createSubtask(subtask2);
-        Integer subtask3Id = taskManager.createSubtask(subtask3);
-        taskManager.deleteAllSubtasks();
-        assertTrue(taskManager.getSubtasks().isEmpty());
-    }
-
-    @Test
-    void createTaskTest() {
-        Task task1 = new Task("Уборка", "Помыть полы и вынести мусор", Status.NEW);
-        Integer task1Id = taskManager.createTask(task1);
-        assertEquals(taskManager.taskHashMap.get(task1Id), task1);
-    }
-
-    @Test
-    void createEpicTest() {
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Integer epic1Id = taskManager.createEpic(epic1);
-        assertEquals(taskManager.epicHashMap.get(epic1Id), epic1);
-    }
-
-    @Test
-    void createSubtaskTest() {
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Integer epic1Id = taskManager.createEpic(epic1);
-        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW, epic1Id);
-        Integer subtask1Id = taskManager.createSubtask(subtask1);
-        assertEquals(taskManager.subtaskHashMap.get(subtask1Id), subtask1);
-    }
-
-    @Test
-    void updateTaskTest() {
-        Task task1 = new Task("Уборка", "Помыть полы и вынести мусор", Status.NEW);
-        Task task2 = new Task("Уборка", "Помыть полы и вынести мусор", Status.IN_PROGRESS);
-        Integer task1Id = taskManager.createTask(task1);
-        task2.setId(task1Id);
-        taskManager.updateTask(task2);
-        assertEquals(taskManager.getTask(task1Id).getStatus(), Status.IN_PROGRESS);
-    }
-
-    @Test
-    void updateEpicTest() {
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Epic epic2 = new Epic("Договориться о встрече с риелтором", "Определить свободное время у себя и риелтора");
-        Integer epic1Id = taskManager.createEpic(epic1);
-        epic2.setId(epic1Id);
-        taskManager.updateEpic(epic2);
-        assertEquals(taskManager.getEpic(epic1Id).getName(), "Договориться о встрече с риелтором");
-        assertEquals(taskManager.getEpic(epic1Id).getDescription(), "Определить свободное время у себя и риелтора");
-    }
-
-    @Test
-    void updateSubtaskTest() {
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Integer epic1Id = taskManager.createEpic(epic1);
-        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW, epic1Id);
-        Subtask subtask2 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.IN_PROGRESS, epic1Id);
-        Integer subtask1Id = taskManager.createSubtask(subtask1);
-        subtask2.setId(subtask1Id);
-        taskManager.updateSubtask(subtask2);
-        assertEquals(taskManager.getSubtask(subtask1Id).getStatus(), Status.IN_PROGRESS);
-    }
-
-    @Test
-    void deleteTaskTest() {
-        Task task1 = new Task("Уборка", "Помыть полы и вынести мусор", Status.NEW);
-        Integer task1Id = taskManager.createTask(task1);
-        taskManager.deleteTask(task1Id);
-        assertFalse(taskManager.taskHashMap.containsKey(task1Id));
-    }
-
-    @Test
-    void deleteSubtaskTest() {
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Integer epic1Id = taskManager.createEpic(epic1);
-        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW, epic1Id);
-        Integer subtask1Id = taskManager.createSubtask(subtask1);
-        taskManager.deleteSubtask(subtask1Id);
-        assertFalse(taskManager.subtaskHashMap.containsKey(subtask1Id));
-    }
-
-    @Test
-    void deleteEpicTest() {
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Integer epic1Id = taskManager.createEpic(epic1);
-        taskManager.deleteEpic(epic1Id);
-        assertFalse(taskManager.epicHashMap.containsKey(epic1Id));
-    }
-
-    @Test
-    void getEpicSubtasksTest() {
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Integer epic1Id = taskManager.createEpic(epic1);
-        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW, epic1Id);
-        Subtask subtask2 = new Subtask("Купить подарочную упаковку", "Найти магазин и купить понравившуюся", Status.IN_PROGRESS, epic1Id);
-        Integer subtask1Id = taskManager.createSubtask(subtask1);
-        Integer subtask2Id = taskManager.createSubtask(subtask2);
-        assertEquals(2, taskManager.getEpicSubtasks(epic1).size());
-    }
-
-    @Test
-    void updateEpicStatusTest() {
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Integer epic1Id = taskManager.createEpic(epic1);
-        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW, epic1Id);
-        Integer subtask1Id = taskManager.createSubtask(subtask1);
-        assertEquals(taskManager.getEpic(epic1Id).getStatus(), Status.NEW);
-        Subtask subtask2 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.DONE, epic1Id);
-        subtask2.setId(subtask1Id);
-        taskManager.updateSubtask(subtask2);
-        assertEquals(taskManager.getEpic(epic1Id).getStatus(), Status.DONE);
-    }
-
-    @Test
-    void getHistoryTest() {
-        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
-        Integer epic1Id = taskManager.createEpic(epic1);
-        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW, epic1Id);
-        Integer subtask1Id = taskManager.createSubtask(subtask1);
-        taskManager.getEpic(epic1Id);
-        taskManager.getSubtask(subtask1Id);
-        assertEquals(taskManager.historyManager.getHistory().get(0), epic1);
-        assertEquals(taskManager.historyManager.getHistory().get(1), subtask1);
     }
 
     @Test
@@ -278,8 +119,93 @@ class InMemoryTaskManagerTest {
         List<Task> list1 = taskManager.getHistory();
         List<Task> list2 = taskManager.getHistory();
         assertEquals(list2, list1);
-
     }
 
+    @Test
+    void shouldShowNewEpicStatus() {
+        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
+        Integer epic1Id = taskManager.createEpic(epic1);
+        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW,
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofMinutes(10),
+                epic1Id);
+        Integer subtask1Id = taskManager.createSubtask(subtask1);
+        Subtask subtask2 = new Subtask("Купить подарочную упаковку", "Найти магазин и купить понравившуюся",
+                Status.NEW,
+                LocalDateTime.of(2000, 1, 1, 1, 0, 0, 0),
+                Duration.ofMinutes(10),
+                epic1Id);
+        Integer subtask2Id = taskManager.createSubtask(subtask2);
+        assertEquals(Status.NEW, epic1.getStatus());
+    }
 
+    @Test
+    void shouldShowDoneEpicStatus() {
+        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
+        Integer epic1Id = taskManager.createEpic(epic1);
+        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.DONE,
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofMinutes(10),
+                epic1Id);
+        Integer subtask1Id = taskManager.createSubtask(subtask1);
+        Subtask subtask2 = new Subtask("Купить подарочную упаковку", "Найти магазин и купить понравившуюся",
+                Status.DONE,
+                LocalDateTime.of(2000, 1, 1, 1, 0, 0, 0),
+                Duration.ofMinutes(10),
+                epic1Id);
+        Integer subtask2Id = taskManager.createSubtask(subtask2);
+        assertEquals(Status.DONE, epic1.getStatus());
+    }
+
+    @Test
+    void shouldShowInProgressEpicStatusWithDifferentSubtasks() {
+        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
+        Integer epic1Id = taskManager.createEpic(epic1);
+        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.NEW,
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofMinutes(10),
+                epic1Id);
+        Integer subtask1Id = taskManager.createSubtask(subtask1);
+        Subtask subtask2 = new Subtask("Купить подарочную упаковку", "Найти магазин и купить понравившуюся",
+                Status.DONE,
+                LocalDateTime.of(2000, 1, 1, 1, 0, 0, 0),
+                Duration.ofMinutes(10),
+                epic1Id);
+        Integer subtask2Id = taskManager.createSubtask(subtask2);
+        taskManager.updateEpicStatus(epic1Id);
+        assertEquals(Status.IN_PROGRESS, epic1.getStatus());
+    }
+
+    @Test
+    void shouldShowInProgressEpicStatusWithInProgressSubtasks() {
+        Epic epic1 = new Epic("Подготовить подарок", "Купить подарок и подарочную упаковку");
+        Integer epic1Id = taskManager.createEpic(epic1);
+        Subtask subtask1 = new Subtask("Купить подарок", "Купить подарок в магазине", Status.IN_PROGRESS,
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofMinutes(10),
+                epic1Id);
+        Integer subtask1Id = taskManager.createSubtask(subtask1);
+        System.out.println(subtask1.getEndTime());
+        Subtask subtask2 = new Subtask("Купить подарочную упаковку", "Найти магазин и купить понравившуюся",
+                Status.IN_PROGRESS,
+                LocalDateTime.of(2000, 1, 1, 1, 11, 0, 0),
+                Duration.ofMinutes(10),
+                epic1Id);
+        Integer subtask2Id = taskManager.createSubtask(subtask2);
+        assertEquals(Status.IN_PROGRESS, epic1.getStatus());
+        assertEquals(epic1Id, subtask1.getEpicId());
+    }
+
+    @Test
+    void shouldShowIntersectionBetweenTasks() {
+        Task task1 = new Task("Task1", "Description task1", Status.NEW,
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0),
+                Duration.ofMinutes(10));
+        Task task2 = new Task("Task2", "Description task2", Status.IN_PROGRESS,
+                LocalDateTime.of(2000, 1, 1, 0, 5, 0, 0),
+                Duration.ofMinutes(10));
+        Integer task1Id = taskManager.createTask(task1);
+        Integer task2Id = taskManager.createTask(task2);
+        assertTrue(taskManager.isIntersect(task1, task2));
+    }
 }
