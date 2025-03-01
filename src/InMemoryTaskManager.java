@@ -63,7 +63,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(taskHashMap.get(id));
             return taskHashMap.get(id);
         }
-        return null;
+        throw new NullPointerException("Задача не найдена");
     }
 
     @Override
@@ -72,7 +72,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(epicHashMap.get(id));
             return epicHashMap.get(id);
         }
-        return null;
+        throw new NullPointerException("Задача не найдена");
     }
 
     @Override
@@ -81,7 +81,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(subtaskHashMap.get(id));
             return subtaskHashMap.get(id);
         }
-        return null;
+        throw new NullPointerException("Задача не найдена");
     }
 
     @Override
@@ -127,7 +127,7 @@ public class InMemoryTaskManager implements TaskManager {
             taskHashMap.put(task.getId(), task);
             addTaskToPrioritizedTasks(task);
         } else {
-            System.out.println("Такой задачи нет");
+            throw new ManagerSaveException("Такой задачи нет");
         }
     }
 
@@ -136,7 +136,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epicHashMap.containsKey(epic.getId())) {
             epicHashMap.put(epic.getId(), epic);
         } else {
-            System.out.println("Такой задачи нет");
+            throw new ManagerSaveException("Такой задачи нет");
         }
     }
 
@@ -147,7 +147,7 @@ public class InMemoryTaskManager implements TaskManager {
             updateEpicStatus(subtask.getEpicId());
             addTaskToPrioritizedTasks(subtask);
         } else {
-            System.out.println("Такой задачи нет");
+            throw new ManagerSaveException("Такой задачи нет");
         }
     }
 
@@ -212,6 +212,7 @@ public class InMemoryTaskManager implements TaskManager {
             epicHashMap.get(id).setStatus(Status.IN_PROGRESS);
         }
         determineEpicDuration(epicHashMap.get(id));
+        epicHashMap.get(id).setDuration();
     }
 
     public void determineEpicDuration(Epic epic) {
@@ -230,6 +231,7 @@ public class InMemoryTaskManager implements TaskManager {
         });
     }
 
+    @Override
     public ArrayList<Task> getPrioritizedTasks() {
         return new ArrayList<Task>(sortedByDateTasks);
     }
@@ -237,9 +239,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTaskToPrioritizedTasks(Task task) {
         if (getPrioritizedTasks().stream().noneMatch(prioritizedTask -> isIntersect(task, prioritizedTask))) {
             sortedByDateTasks.add(task);
-            System.out.println("задача добавлена");
         } else {
-            System.out.println("Добавляемая задача пересекается по времени с задачами из списка");
+            throw new IntersectionException("Добавляемая задача пересекается по времени с задачами из списка");
         }
     }
 

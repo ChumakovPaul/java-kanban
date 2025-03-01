@@ -129,7 +129,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new ManagerSaveException();
+            throw new ManagerSaveException(" ");
         }
     }
 
@@ -155,10 +155,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                         manager.createSubtask((Subtask) task);
                         break;
                 }
-
             }
         } catch (IOException e) {
-            throw new ManagerSaveException();
+            throw new ManagerSaveException("");
         }
 
         generatedId = maxId(manager);
