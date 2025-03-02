@@ -16,11 +16,15 @@ public class EpicsHandler extends BaseHttpHandler {
         String[] path = httpExchange.getRequestURI().getPath().split("/");
         switch (requestMethod) {
             case "GET": {
-                if (path.length == 2) {
+                if (path.length == 2 && path[1].equals("epics")) {
                     getEpics(httpExchange);
-                } else if (path.length == 3) {
+                } else if (path.length == 3
+                        && path[1].equals("epics")
+                        && path[2].matches("\\d+")) {
                     getEpicByID(httpExchange, path);
-                } else if (path.length == 4 && path[3].equals("subtasks")) {
+                } else if (path.length == 4 && path[1].equals("epics")
+                        && path[2].matches("\\d+")
+                        && path[3].equals("subtasks")) {
                     getEpicSubtasks(httpExchange, path);
                 } else {
                     sendNotFound(httpExchange, "Эндпоинт не найден");
@@ -28,14 +32,16 @@ public class EpicsHandler extends BaseHttpHandler {
                 break;
             }
             case "POST": {
-                if (path.length == 2) {
+                if (path.length == 2 && path[1].equals("epics")) {
                     createEpic(httpExchange, path);
                 } else {
                     sendNotFound(httpExchange, "Эндпоинт не найден");
                 }
             }
             case "DELETE": {
-                if (path.length == 3) {
+                if (path.length == 3
+                        && path[1].equals("epics")
+                        && path[2].matches("\\d+")) {
                     deleteEpic(httpExchange, path);
                 } else {
                     sendNotFound(httpExchange, "Эндпоинт не найден");
@@ -57,7 +63,7 @@ public class EpicsHandler extends BaseHttpHandler {
         try {
             String response = gson.toJson(manager.getEpic(epicId));
             sendText(httpExchange, response);
-        } catch (NullPointerException e) {
+        } catch (NullTaskException e) {
             sendNotFound(httpExchange, "Эпик с заданным id не существует");
         }
     }
@@ -68,7 +74,7 @@ public class EpicsHandler extends BaseHttpHandler {
             List<Subtask> epicSubtaskList = manager.getEpicSubtasks(manager.getEpic(epicId));
             String response = gson.toJson(epicSubtaskList);
             sendText(httpExchange, response);
-        } catch (NullPointerException e) {
+        } catch (NullTaskException e) {
             sendNotFound(httpExchange, "Эпик с заданным id не существует");
         }
     }

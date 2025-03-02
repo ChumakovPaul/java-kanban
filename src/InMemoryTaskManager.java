@@ -63,7 +63,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(taskHashMap.get(id));
             return taskHashMap.get(id);
         }
-        throw new NullPointerException("Задача не найдена");
+        throw new NullTaskException("Задача не найдена");
     }
 
     @Override
@@ -72,7 +72,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(epicHashMap.get(id));
             return epicHashMap.get(id);
         }
-        throw new NullPointerException("Задача не найдена");
+        throw new NullTaskException("Задача не найдена");
     }
 
     @Override
@@ -81,7 +81,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(subtaskHashMap.get(id));
             return subtaskHashMap.get(id);
         }
-        throw new NullPointerException("Задача не найдена");
+        throw new NullTaskException("Задача не найдена");
     }
 
     @Override

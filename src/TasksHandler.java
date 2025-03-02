@@ -16,9 +16,11 @@ public class TasksHandler extends BaseHttpHandler {
         String[] path = httpExchange.getRequestURI().getPath().split("/");
         switch (requestMethod) {
             case "GET": {
-                if (path.length == 2) {
+                if (path.length == 2 && path[1].equals("tasks")) {
                     getTasks(httpExchange);
-                } else if (path.length == 3) {
+                } else if (path.length == 3
+                        && path[1].equals("tasks")
+                        && path[2].matches("\\d+")) {
                     getTaskByID(httpExchange, path);
                 } else {
                     sendNotFound(httpExchange, "Эндпоинт не найден");
@@ -26,9 +28,11 @@ public class TasksHandler extends BaseHttpHandler {
                 break;
             }
             case "POST": {
-                if (path.length == 2) {
+                if (path.length == 2 && path[1].equals("tasks")) {
                     createTask(httpExchange, path);
-                } else if (path.length == 3) {
+                } else if (path.length == 3
+                        && path[1].equals("tasks")
+                        && path[2].matches("\\d+")) {
                     updateTask(httpExchange, path);
                 } else {
                     sendNotFound(httpExchange, "Эндпоинт не найден");
@@ -36,7 +40,9 @@ public class TasksHandler extends BaseHttpHandler {
                 break;
             }
             case "DELETE": {
-                if (path.length == 3) {
+                if (path.length == 3
+                        && path[1].equals("tasks")
+                        && path[2].matches("\\d+")) {
                     deleteTask(httpExchange, path);
                 } else {
                     sendNotFound(httpExchange, "Эндпоинт не найден");
@@ -57,7 +63,7 @@ public class TasksHandler extends BaseHttpHandler {
         try {
             String response = gson.toJson(manager.getTask(taskId));
             sendText(httpExchange, response);
-        } catch (NullPointerException e) {
+        } catch (NullTaskException e) {
             sendNotFound(httpExchange, "Таск с заданным id не существует");
         }
     }

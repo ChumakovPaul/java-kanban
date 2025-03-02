@@ -15,9 +15,11 @@ public class SubtasksHandler extends BaseHttpHandler {
         String[] path = httpExchange.getRequestURI().getPath().split("/");
         switch (requestMethod) {
             case "GET": {
-                if (path.length == 2) {
+                if (path.length == 2 && path[1].equals("subtasks")) {
                     getSubtasks(httpExchange);
-                } else if (path.length == 3) {
+                } else if (path.length == 3
+                        && path[1].equals("subtasks")
+                        && path[2].matches("\\d+")) {
                     getSubtaskByID(httpExchange, path);
                 } else {
                     sendNotFound(httpExchange, "Эндпоинт не найден");
@@ -27,7 +29,9 @@ public class SubtasksHandler extends BaseHttpHandler {
             case "POST": {
                 if (path.length == 2) {
                     createSubtask(httpExchange, path);
-                } else if (path.length == 3) {
+                } else if (path.length == 3
+                        && path[1].equals("subtasks")
+                        && path[2].matches("\\d+")) {
                     updateSubtask(httpExchange, path);
                 } else {
                     sendNotFound(httpExchange, "Эндпоинт не найден");
@@ -35,7 +39,9 @@ public class SubtasksHandler extends BaseHttpHandler {
                 break;
             }
             case "DELETE": {
-                if (path.length == 3) {
+                if (path.length == 3
+                        && path[1].equals("subtasks")
+                        && path[2].matches("\\d+")) {
                     deleteSubtask(httpExchange, path);
                 } else {
                     sendNotFound(httpExchange, "Эндпоинт не найден");
@@ -56,7 +62,7 @@ public class SubtasksHandler extends BaseHttpHandler {
         try {
             String response = gson.toJson(manager.getSubtask(subtaskId));
             sendText(httpExchange, response);
-        } catch (NullPointerException e) {
+        } catch (NullTaskException e) {
             sendNotFound(httpExchange, "Сабтаск с заданным id не существует");
         }
     }
