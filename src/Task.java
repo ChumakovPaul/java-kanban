@@ -7,7 +7,7 @@ public class Task {
     private String description;
     private Integer id;
     private Status status;
-    private Duration duration;
+    Duration duration;
     private LocalDateTime startTime;
     TaskType type;
 
@@ -18,6 +18,24 @@ public class Task {
         this.startTime = startTime;
         this.duration = duration;
         this.type = TaskType.TASK;
+    }
+
+    public Task(String name, String description, LocalDateTime startTime, Duration duration) {
+        this.name = name;
+        this.description = description;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.type = TaskType.TASK;
+    }
+
+    public Task(Integer id, String name, String description, Status status, LocalDateTime startTime, Duration duration) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.type = TaskType.TASK;
+        setId(id);
     }
 
     public Task(String name, String description, Status status) {

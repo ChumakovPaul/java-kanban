@@ -44,5 +44,7 @@ public interface TaskManager {
     void updateEpicStatus(Integer id) throws ManagerSaveException;
 
     List<Task> getHistory();
+
+    List<Task> getPrioritizedTasks();
 }
 

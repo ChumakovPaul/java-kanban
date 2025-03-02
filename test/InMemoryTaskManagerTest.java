@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -185,7 +186,6 @@ class InMemoryTaskManagerTest {
                 Duration.ofMinutes(10),
                 epic1Id);
         Integer subtask1Id = taskManager.createSubtask(subtask1);
-        System.out.println(subtask1.getEndTime());
         Subtask subtask2 = new Subtask("Купить подарочную упаковку", "Найти магазин и купить понравившуюся",
                 Status.IN_PROGRESS,
                 LocalDateTime.of(2000, 1, 1, 1, 11, 0, 0),
@@ -205,7 +205,8 @@ class InMemoryTaskManagerTest {
                 LocalDateTime.of(2000, 1, 1, 0, 5, 0, 0),
                 Duration.ofMinutes(10));
         Integer task1Id = taskManager.createTask(task1);
-        Integer task2Id = taskManager.createTask(task2);
-        assertTrue(taskManager.isIntersect(task1, task2));
+        Assertions.assertThrows(IntersectionException.class, () -> {
+            Integer task2Id = taskManager.createTask(task2);
+        });
     }
 }

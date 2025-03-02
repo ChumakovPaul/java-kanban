@@ -155,7 +155,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                         manager.createSubtask((Subtask) task);
                         break;
                 }
-
             }
         } catch (IOException e) {
             throw new ManagerSaveException();
